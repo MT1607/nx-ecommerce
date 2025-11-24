@@ -2,7 +2,11 @@
   "name": "@ecommerce/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "user-service": "nx run @ecommerce/user-service:serve:development",
+    "gateway": "nx run @ecommerce/gateway:serve:development",
+    "gateway-e2e": "nx run @ecommerce/gateway-e2e:e2e"
+  },
   "private": true,
   "devDependencies": {
     "@nestjs/config": "^4.0.2",

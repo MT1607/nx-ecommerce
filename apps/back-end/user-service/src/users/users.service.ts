@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
+import { CreateUserDto, User } from '@ecommerce/libs';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -10,13 +11,34 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>
   ) {}
 
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
+  @MessagePattern({ cmd: 'create_user' })
+  async create(createUserDto: CreateUserDto) {
+    try {
+      const { first_name, last_name, email, password, type } = createUserDto;
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const user = this.usersRepository.create({
+        first_name,
+        last_name,
+        email,
+        password: hashedPassword,
+        type: type,
+      } as DeepPartial<User>);
+      return await this.usersRepository.save(user);
+    } catch (error: any) {
+      throw new RpcException(error.message || 'Error creating user');
+    }
+  }
 
   @MessagePattern({ cmd: 'get_users' })
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<Partial<User>[]> {
+    const users = await this.usersRepository.find();
+    console.log('Users fetched:', users);
+    const response = users.map((user) => {
+      const { password, ...result } = user;
+      return result;
+    });
+    return response;
   }
 
   // findOne(id: number) {

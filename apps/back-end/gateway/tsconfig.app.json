@@ -7,6 +7,7 @@
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "isolatedModules": true,
     "target": "es2021"
   },
   "include": ["src/**/*.ts"],
@@ -17,5 +18,10 @@
     "jest.config.cts",
     "src/**/*.spec.ts",
     "src/**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../libs/tsconfig.lib.json"
+    }
   ]
 }

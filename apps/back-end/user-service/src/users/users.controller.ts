@@ -1,16 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 import { MessagePattern } from '@nestjs/microservices';
+import { CreateUserDto } from '@ecommerce/libs';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
+  @MessagePattern({ cmd: 'create_user' })
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
 
   @MessagePattern({ cmd: 'get_users' })
   findAll() {

@@ -24,8 +24,11 @@
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "@swc/jest": "~0.2.38",
+    "@types/bcrypt": "^6.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
+    "bcrypt": "^6.0.0",
+    "class-validator": "^0.14.2",
     "jest": "^30.0.2",
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
@@ -40,7 +43,8 @@
   },
   "workspaces": [
     "packages/*",
-    "apps/back-end/*"
+    "apps/back-end/*",
+    "libs"
   ],
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -48,6 +52,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.0",
     "axios": "^1.6.0",
+    "express": "^5.1.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0"
   }

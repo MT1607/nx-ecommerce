@@ -2,5 +2,18 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./apps/back-end/user-service-e2e"
+    },
+    {
+      "path": "./apps/back-end/user-service"
+    },
+    {
+      "path": "./apps/back-end/gateway-e2e"
+    },
+    {
+      "path": "./apps/back-end/gateway"
+    }
+  ]
 }

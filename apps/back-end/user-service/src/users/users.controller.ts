@@ -1,10 +1,11 @@
-import { Body, Controller } from '@nestjs/common';
+import { Body, Controller, UseFilters } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 import { MessagePattern } from '@nestjs/microservices';
-import { CreateUserDto } from '@ecommerce/libs';
+import { CreateUserDto, DbExceptionFilter } from '@ecommerce/libs';
 
 @Controller('users')
+@UseFilters(new DbExceptionFilter())
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

@@ -12,21 +12,22 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      const { first_name, last_name, email, password, type } = createUserDto;
-      const hashedPassword = await bcrypt.hash(password, 10);
+    // try {
+    const { first_name, last_name, email, password, type } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      const user = this.usersRepository.create({
-        first_name,
-        last_name,
-        email,
-        password: hashedPassword,
-        type: type,
-      } as DeepPartial<User>);
-      return await this.usersRepository.save(user);
-    } catch (error: any) {
-      throw new RpcException(error.message || 'Error creating user');
-    }
+    const user = this.usersRepository.create({
+      first_name,
+      last_name,
+      email,
+      password: hashedPassword,
+      type: type,
+    } as DeepPartial<User>);
+    return await this.usersRepository.save(user);
+    // } catch (error: any) {
+    //   console.log('Error in UsersService.create:', error.code);
+    //   throw new RpcException(error.code || 'Error creating user');
+    // }
   }
 
   async findAll(): Promise<Partial<User>[]> {

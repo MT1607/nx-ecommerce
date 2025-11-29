@@ -16,6 +16,7 @@ export class DbExceptionFilter implements RpcExceptionFilter<QueryFailedError> {
     let message: string = 'Database error occurred.';
 
     const sqlState = (exception as any).code;
+    console.log('sql state: ', sqlState);
 
     switch (sqlState) {
       case '23505': // Unique Violation

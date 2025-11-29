@@ -11,7 +11,6 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>
   ) {}
 
-  @MessagePattern({ cmd: 'create_user' })
   async create(createUserDto: CreateUserDto) {
     try {
       const { first_name, last_name, email, password, type } = createUserDto;
@@ -30,7 +29,6 @@ export class UsersService {
     }
   }
 
-  @MessagePattern({ cmd: 'get_users' })
   async findAll(): Promise<Partial<User>[]> {
     const users = await this.usersRepository.find();
     console.log('Users fetched:', users);

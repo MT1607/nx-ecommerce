@@ -1,8 +1,8 @@
-import { Injectable, UseFilters } from '@nestjs/common';
-import { MessagePattern, RpcException } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial, Db } from 'typeorm';
-import { CreateUserDto, DbExceptionFilter, User } from '@ecommerce/libs';
+import { Repository, DeepPartial } from 'typeorm';
+import { CreateUserDto, User } from '@ecommerce/libs';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

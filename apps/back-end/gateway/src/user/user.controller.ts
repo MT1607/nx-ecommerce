@@ -1,5 +1,5 @@
-import { CreateUserDto } from '@ecommerce/libs';
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { CreateUserDto, UpdateProfileDto } from '@ecommerce/libs';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { lastValueFrom } from 'rxjs';
 @Controller()
@@ -17,7 +17,6 @@ export class UserController {
   }
 
   @Get('users')
-  @HttpCode(200)
   async getUsers() {
     try {
       const usersData = await lastValueFrom(this.userService.getUsers());
@@ -26,6 +25,19 @@ export class UserController {
         data: usersData,
         status: 200,
       };
+    } catch (error: any) {
+      throw error.error;
+    }
+  }
+
+  @Put('users/profiles/:user_id')
+  async updateProfile(
+    @Param('user_id') userId: string,
+    @Body() profileData: UpdateProfileDto
+  ) {
+    try {
+      await lastValueFrom(this.userService.updateProfile(userId, profileData));
+      return { status: 200, message: 'Profile updated successfully' };
     } catch (error: any) {
       throw error.error;
     }

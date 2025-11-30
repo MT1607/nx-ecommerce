@@ -5,6 +5,11 @@ export interface UserInterface {
   email: string;
   password: string;
   type: 'admin' | 'guest';
+  created_at: Date;
+  updated_at: Date;
 }
 
-export type PublicUserInterface = Omit<UserInterface, 'password'>;
+export type PublicUserInterface = Omit<
+  UserInterface,
+  'password' | 'created_at' | 'updated_at'
+>;

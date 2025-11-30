@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 import { CreateUserDto, User } from '@ecommerce/libs';
@@ -12,7 +11,6 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    // try {
     const { first_name, last_name, email, password, type } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -24,10 +22,6 @@ export class UsersService {
       type: type,
     } as DeepPartial<User>);
     return await this.usersRepository.save(user);
-    // } catch (error: any) {
-    //   console.log('Error in UsersService.create:', error.code);
-    //   throw new RpcException(error.code || 'Error creating user');
-    // }
   }
 
   async findAll(): Promise<Partial<User>[]> {
@@ -39,16 +33,4 @@ export class UsersService {
     });
     return response;
   }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

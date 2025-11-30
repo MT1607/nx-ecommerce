@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from '../users/users.module';
-import { User } from '@ecommerce/libs';
+import { Profile, User } from '@ecommerce/libs';
+import { ProfilesModule } from '../profiles/profiles.module';
 
 @Module({
   imports: [
@@ -15,9 +16,10 @@ import { User } from '@ecommerce/libs';
       password: process.env.USER_SERVICE_DATABASE_PASSWORD,
       database: process.env.USER_SERVICE_DATABASE_NAME,
       autoLoadEntities: true,
-      entities: [User],
+      entities: [User, Profile],
     }),
     UsersModule,
+    ProfilesModule,
   ],
 })
 export class AppModule {}

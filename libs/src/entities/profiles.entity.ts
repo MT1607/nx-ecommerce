@@ -1,24 +1,21 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('users')
-export class User {
+@Entity('profiles')
+export class Profile {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  first_name!: string;
-
-  @Column()
-  last_name!: string;
-
   @Column({ unique: true })
-  email!: string;
+  user_id!: string;
 
   @Column()
-  password!: string;
+  address!: string;
 
   @Column()
-  type!: 'admin' | 'guest';
+  phone!: string;
+
+  @Column()
+  date_of_birth!: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at!: Date;

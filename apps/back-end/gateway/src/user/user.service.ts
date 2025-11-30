@@ -1,9 +1,14 @@
-import type { CreateUserDto, PublicUserInterface } from '@ecommerce/libs';
+import type {
+  CreateUserDto,
+  PublicUserInterface,
+  UpdateProfileDto,
+} from '@ecommerce/libs';
 import {
   Injectable,
   Inject,
   Body,
   InternalServerErrorException,
+  Param,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
@@ -26,5 +31,15 @@ export class UserService {
     } catch (error) {
       throw new InternalServerErrorException('Could not create users');
     }
+  }
+
+  updateProfile(
+    @Param('user_id') userId: string,
+    @Body() profileData: UpdateProfileDto
+  ) {
+    return this.userClient.send(
+      { cmd: 'update_profile' },
+      { user_id: userId, profileData: profileData }
+    );
   }
 }

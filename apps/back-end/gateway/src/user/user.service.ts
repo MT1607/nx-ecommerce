@@ -1,7 +1,8 @@
-import type {
-  CreateUserDto,
-  PublicUserInterface,
-  UpdateProfileDto,
+import {
+  PublicProfilesInterface,
+  type CreateUserDto,
+  type PublicUserInterface,
+  type UpdateProfileDto,
 } from '@ecommerce/libs';
 import {
   Injectable,
@@ -40,6 +41,13 @@ export class UserService {
     return this.userClient.send(
       { cmd: 'update_profile' },
       { user_id: userId, profileData: profileData }
+    );
+  }
+
+  getProfile(@Param('user_id') userId: string) {
+    return this.userClient.send<PublicProfilesInterface>(
+      { cmd: 'get_profile' },
+      userId
     );
   }
 }

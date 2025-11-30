@@ -3,7 +3,7 @@ export interface ProfilesInterface {
   user_id: string;
   address: string;
   phone: string;
-  date_of_birth: string;
+  date_of_birth: Date;
   created_at: Date;
   updated_at: Date;
 }

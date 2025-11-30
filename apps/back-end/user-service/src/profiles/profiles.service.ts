@@ -1,4 +1,8 @@
-import { Profile, UpdateProfileDto } from '@ecommerce/libs';
+import {
+  Profile,
+  PublicProfilesInterface,
+  UpdateProfileDto,
+} from '@ecommerce/libs';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Payload, RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,5 +35,19 @@ export class ProfilesService {
     console.log('object assign: ', userToUpdate);
 
     return this.profilesRepository.save(userToUpdate);
+  }
+
+  async getProfile(user_id: string): Promise<PublicProfilesInterface> {
+    console.log('Getting profile for user_id: ', user_id);
+    const profile = await this.profilesRepository.findOneBy({ user_id });
+
+    if (!profile) {
+      throw new RpcException({
+        status: HttpStatus.NOT_FOUND,
+        message: `Profile with user_id ${user_id} not found`,
+      });
+    }
+
+    return profile;
   }
 }

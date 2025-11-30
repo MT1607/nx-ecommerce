@@ -1,4 +1,4 @@
-import { Body, Controller, Param } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { UpdateProfileDto } from '@ecommerce/libs';
 import { MessagePattern, Payload } from '@nestjs/microservices';
@@ -13,5 +13,10 @@ export class ProfilesController {
   ) {
     const { user_id, profileData } = payload;
     return this.profilesService.updateProfile({ user_id, profileData });
+  }
+
+  @MessagePattern({ cmd: 'get_profile' })
+  async getProfile(@Payload() user_id: string) {
+    return this.profilesService.getProfile(user_id);
   }
 }

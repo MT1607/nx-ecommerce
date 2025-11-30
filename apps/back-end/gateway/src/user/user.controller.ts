@@ -30,6 +30,22 @@ export class UserController {
     }
   }
 
+  @Get('users/profiles/:user_id')
+  async getProfile(@Param('user_id') userId: string) {
+    try {
+      const profileData = await lastValueFrom(
+        this.userService.getProfile(userId)
+      );
+      return {
+        message: 'Profile fetched successfully',
+        data: profileData,
+        status: 200,
+      };
+    } catch (error: any) {
+      throw error.error;
+    }
+  }
+
   @Put('users/profiles/:user_id')
   async updateProfile(
     @Param('user_id') userId: string,

@@ -21,6 +21,11 @@ export class AuthController {
     return this.authService.register(registerDto);
   }
 
+  @Post('verify-email/:userId')
+  verifyEmail(@Param('userId') userId: string, @Body('otp') otp: string) {
+    return this.authService.verifyEmail(userId, otp);
+  }
+
   @Get()
   findAll() {
     return this.authService.findAll();

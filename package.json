@@ -2,20 +2,53 @@
   "name": "@org/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "back-end": "npx nx run @org/ecommerce-be:serve --configuration=development"
+  },
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.0",
     "@nx/js": "22.0.0",
+    "@nx/nest": "^22.0.0",
+    "@nx/node": "22.0.0",
+    "@nx/web": "22.0.0",
+    "@nx/webpack": "22.0.0",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "20.19.9",
+    "@types/pg": "^8.16.0",
     "nx": "22.0.0",
     "prettier": "^2.6.2",
+    "prisma": "^7.1.0",
     "tslib": "^2.3.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "webpack-cli": "^5.1.4"
   },
   "workspaces": [
-    "packages/*"
-  ]
+    "packages/*",
+    "apps/*",
+    "libs/*",
+    "libs"
+  ],
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/mapped-types": "*",
+    "@nestjs/platform-express": "^11.0.0",
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
+    "axios": "^1.6.0",
+    "bcrypt": "^6.0.0",
+    "class-validator": "^0.14.3",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.1.13",
+    "resend": "^6.6.0",
+    "rxjs": "^7.8.0"
+  }
 }

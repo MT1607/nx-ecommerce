@@ -1,0 +1,132 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../apps/ecommerce-be/src/prisma/client"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model coupon {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code            String    @unique @db.VarChar(50)
+  discount_value  Decimal   @db.Decimal(10, 2)
+  discount_type   String    @db.VarChar(10)
+  expiration_date DateTime  @db.Timestamptz(6)
+  is_active       Boolean?  @default(true)
+  updated_at      DateTime? @default(now()) @db.Timestamptz(6)
+  orders          orders[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model order_items {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id       String    @db.Uuid
+  product_id     String    @db.Uuid
+  quantity       Int
+  price_at_order Decimal   @db.Decimal(10, 2)
+  updated_at     DateTime? @default(now()) @db.Timestamptz(6)
+  orders         orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products       products  @relation(fields: [product_id], references: [id], onUpdate: NoAction)
+
+  @@unique([order_id, product_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model orders {
+  id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String        @db.Uuid
+  total_amount     Decimal       @db.Decimal(10, 2)
+  shipping_address String
+  status           String        @default("pending") @db.VarChar(50)
+  coupon_id        String?       @db.Uuid
+  created_at       DateTime?     @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?     @default(now()) @db.Timestamptz(6)
+  order_items      order_items[]
+  coupon           coupon?       @relation(fields: [coupon_id], references: [id], onUpdate: NoAction)
+  users            users         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  payment          payment?
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model payment {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id       String    @unique @db.Uuid
+  payment_method String    @db.VarChar(50)
+  amount_paid    Decimal   @db.Decimal(10, 2)
+  transaction_id String?   @unique @db.VarChar(255)
+  status         String    @default("pending") @db.VarChar(50)
+  paid_at        DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime? @default(now()) @db.Timestamptz(6)
+  orders         orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model product_categories {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type_id       String        @db.Uuid
+  name          String        @db.VarChar(50)
+  updated_at    DateTime?     @default(now()) @db.Timestamptz(6)
+  product_types product_types @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products      products[]
+
+  @@unique([type_id, name])
+}
+
+model product_types {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String               @unique @db.VarChar(50)
+  updated_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  product_categories product_categories[]
+  products           products[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model products {
+  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type_id            String             @db.Uuid
+  category_id        String             @db.Uuid
+  name               String             @db.VarChar(255)
+  price              Decimal            @db.Decimal(10, 2)
+  thumbnail          String?
+  dt_storage         Json?
+  is_available       Boolean?           @default(true)
+  created_at         DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?          @default(now()) @db.Timestamptz(6)
+  order_items        order_items[]
+  product_categories product_categories @relation(fields: [category_id], references: [id], onUpdate: NoAction)
+  product_types      product_types      @relation(fields: [type_id], references: [id], onUpdate: NoAction)
+}
+
+model profiles {
+  user_id   String    @id @db.Uuid
+  address   String?   @db.VarChar(255)
+  phone     String?   @unique @db.VarChar(20)
+  create_at DateTime? @default(now()) @db.Timestamptz(6)
+  users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model users {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String         @unique @db.VarChar(255)
+  password     String
+  first_name   String?        @db.VarChar(100)
+  last_name    String?        @db.VarChar(100)
+  type         String         @default("guest") @db.VarChar(20)
+  is_verified  Boolean        @default(false)
+  created_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  orders       orders[]
+  profiles     profiles?
+  verification verification[]
+}
+
+model verification {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String    @db.Uuid
+  hash_code  String
+  expired_at DateTime  @db.Timestamptz(6)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}

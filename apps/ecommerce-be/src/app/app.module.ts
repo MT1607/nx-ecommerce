@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import {
   ArcjetModule,
   detectBot,
-  fixedWindow,
   shield,
   validateEmail,
   tokenBucket,
@@ -20,7 +19,10 @@ import {
       characteristics: ['ip.src'],
       rules: [
         shield({ mode: 'LIVE' }),
-        detectBot({ mode: 'LIVE', allow: ['CATEGORY:SEARCH_ENGINE'] }),
+        detectBot({
+          mode: 'LIVE',
+          allow: ['CATEGORY:SEARCH_ENGINE', 'POSTMAN'],
+        }),
         tokenBucket({
           mode: 'LIVE',
           refillRate: 5, // Refill 5 tokens per interval

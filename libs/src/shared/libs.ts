@@ -10,6 +10,7 @@ export const sendEmail = async (
   subject: string,
   html: string
 ): Promise<boolean> => {
+  console.log('Sending email to:', to, 'from:', fromEmail);
   const { data, error } = await resend.emails.send({
     from: `From ${fromEmail} <${fromEmail}>`,
     to: to,

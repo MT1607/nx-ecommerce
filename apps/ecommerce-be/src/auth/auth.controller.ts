@@ -13,15 +13,14 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { LoginDto } from './dto/login-auth.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
+  @Post('register')
   async create(
     @Body() registerDto: RegisterDto,
     @Res({ passthrough: true }) res: FastifyReply
@@ -61,7 +60,6 @@ export class AuthController {
   }
 
   @Post('verify-email')
-  @HttpCode(HttpStatus.OK)
   async verifyEmail(
     @Body('otp') otp: string,
     @Req() req: FastifyRequest,
@@ -77,23 +75,31 @@ export class AuthController {
     return res.status(HttpStatus.OK).send({ message });
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  @Post('login')
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: FastifyReply
+  ) {
+    const result = await this.authService.login(loginDto);
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
+    if (result.refreshToken) {
+      res.setCookie('refresh-token', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
+    if (result.accessToken) {
+      res.setCookie('access-token', result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 1 * 60 * 60 * 1000, // 1 hour
+      });
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return res.status(HttpStatus.OK).send({ message: 'Login successful' });
   }
 }

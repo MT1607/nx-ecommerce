@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { RegisterDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { PrismaService } from '../prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -12,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '@org/libs';
+import { LoginDto } from './dto/login-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -121,20 +121,29 @@ export class AuthService {
     return { message: 'Email verified successfully' };
   }
 
-  findAll() {
-    return this.prisma.users.findFirst();
-  }
+  async login(loginDto: LoginDto) {
+    const { email, password } = loginDto;
+    const userRecord = await this.prisma.users.findUnique({
+      where: { email },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!userRecord) {
+      throw new NotFoundException('User not registered');
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    const isPasswordValid = await bcrypt.compare(password, userRecord.password);
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    if (!isPasswordValid) {
+      throw new BadRequestException('Password is incorrect');
+    }
+
+    const payload = {
+      userId: userRecord.id,
+      email: userRecord.email,
+      roles: `${userRecord.type}`,
+    };
+
+    return await this.generateJwtToken(payload);
   }
 
   async generateJwtToken(payload: {

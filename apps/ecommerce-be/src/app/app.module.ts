@@ -9,6 +9,7 @@ import {
   tokenBucket,
   ArcjetGuard,
 } from '@arcjet/nest';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import {
       ],
     }),
     AuthModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [

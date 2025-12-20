@@ -1,16 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  HttpCode,
-  Res,
-  Req,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, Res, Req, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/create-auth.dto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -101,5 +89,16 @@ export class AuthController {
     }
 
     return res.status(HttpStatus.OK).send({ message: 'Login successful' });
+  }
+
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: FastifyReply) {
+    res.clearCookie('refresh-token', {
+      path: '/api/auth',
+    });
+    res.clearCookie('access-token', {
+      path: '/api/auth',
+    });
+    return res.status(HttpStatus.OK).send({ message: 'Logout successful' });
   }
 }

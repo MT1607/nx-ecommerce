@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { first_name, last_name, email, password } = registerDto;
+    const { first_name, last_name, email, password, type } = registerDto;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await this.prisma.users.create({
       data: {
@@ -30,6 +30,7 @@ export class AuthService {
         last_name,
         email,
         password: hashedPassword,
+        type: type || 'guest',
       },
     });
     //TODO: Generate JWT

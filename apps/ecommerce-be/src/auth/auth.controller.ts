@@ -59,8 +59,16 @@ export class AuthController {
         message: 'Invalid or expired verification token',
       });
     }
-    const message = this.authService.verifyEmail(token, otp);
-    return res.status(HttpStatus.OK).send({ message });
+    const result = await this.authService.verifyEmail(token, otp);
+    if (!result.message) {
+      return res.status(HttpStatus.BAD_REQUEST).send({
+        message: 'Invalid or expired OTP',
+      });
+    }
+    res.clearCookie('email-verification', {
+      path: '/api/auth',
+    });
+    return res.status(HttpStatus.OK).send({ message: result.message });
   }
 
   @Post('login')
